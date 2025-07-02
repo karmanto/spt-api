@@ -6,6 +6,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\GalleryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PromoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,10 +26,17 @@ use Illuminate\Support\Facades\Route;
 // Route::post('/users', [\App\Http\Controllers\UserController::class, 'register']);
 Route::post('/users/login', [\App\Http\Controllers\UserController::class, 'login']);
 
+Route::get('/promos', [PromoController::class, 'index']);
+Route::get('/promos/{promo}', [PromoController::class, 'show']);
+
 Route::middleware(\App\Http\Middleware\ApiAuthMiddleware::class)->group(function () {
     Route::get('/users/current', [\App\Http\Controllers\UserController::class, 'get']);
     Route::patch('/users/current', [\App\Http\Controllers\UserController::class, 'update']);
     Route::delete('/users/logout', [\App\Http\Controllers\UserController::class, 'logout']);
+    
+    Route::post('/promos', [PromoController::class, 'store']);
+    Route::put('/promos/{promo}', [PromoController::class, 'update']);
+    Route::delete('/promos/{promo}', [PromoController::class, 'destroy']);
 
     // Route::post('/contacts', [\App\Http\Controllers\ContactController::class, 'create']);
     // Route::get('/contacts', [\App\Http\Controllers\ContactController::class, 'search']);
