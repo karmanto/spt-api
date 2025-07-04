@@ -7,6 +7,7 @@ use App\Http\Controllers\GalleryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PromoController;
+use App\Http\Controllers\PackageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,9 @@ Route::post('/users/login', [\App\Http\Controllers\UserController::class, 'login
 Route::get('/promos', [PromoController::class, 'index']);
 Route::get('/promos/{promo}', [PromoController::class, 'show']);
 
+Route::get('/packages', [PackageController::class, 'index']);
+Route::get('/packages/{package}', [PackageController::class, 'show']);
+
 Route::middleware(\App\Http\Middleware\ApiAuthMiddleware::class)->group(function () {
     Route::get('/users/current', [\App\Http\Controllers\UserController::class, 'get']);
     Route::patch('/users/current', [\App\Http\Controllers\UserController::class, 'update']);
@@ -38,23 +42,9 @@ Route::middleware(\App\Http\Middleware\ApiAuthMiddleware::class)->group(function
     Route::put('/promos/{promo}', [PromoController::class, 'update']);
     Route::delete('/promos/{promo}', [PromoController::class, 'destroy']);
 
-    // Route::post('/contacts', [\App\Http\Controllers\ContactController::class, 'create']);
-    // Route::get('/contacts', [\App\Http\Controllers\ContactController::class, 'search']);
-    // Route::get('/contacts/{id}', [\App\Http\Controllers\ContactController::class, 'get'])->where('id', '[0-9]+');
-    // Route::put('/contacts/{id}', [\App\Http\Controllers\ContactController::class, 'update'])->where('id', '[0-9]+');
-    // Route::delete('/contacts/{id}', [\App\Http\Controllers\ContactController::class, 'delete'])->where('id', '[0-9]+');
-
-    // Route::post('/contacts/{idContact}/addresses', [\App\Http\Controllers\AddressController::class, 'create'])
-    //     ->where('idContact', '[0-9]+');
-    // Route::get('/contacts/{idContact}/addresses', [\App\Http\Controllers\AddressController::class, 'list'])
-    //     ->where('idContact', '[0-9]+');
-    // Route::get('/contacts/{idContact}/addresses/{idAddress}', [\App\Http\Controllers\AddressController::class, 'get'])
-    //     ->where('idContact', '[0-9]+')
-    //     ->where('idAddress', '[0-9]+');
-    // Route::put('/contacts/{idContact}/addresses/{idAddress}', [\App\Http\Controllers\AddressController::class, 'update'])
-    //     ->where('idContact', '[0-9]+')
-    //     ->where('idAddress', '[0-9]+');
-    // Route::delete('/contacts/{idContact}/addresses/{idAddress}', [\App\Http\Controllers\AddressController::class, 'delete'])
-    //     ->where('idContact', '[0-9]+')
-    //     ->where('idAddress', '[0-9]+');
+    Route::post('/packages', [PackageController::class, 'store']);
+    Route::put('/packages/{package}', [PackageController::class, 'update']);
+    Route::delete('/packages/{package}', [PackageController::class, 'destroy']);
+    Route::post('/packages/{package}/images', [PackageController::class, 'manageImages']);
+    Route::post('/packages/upload-image', [PackageController::class, 'uploadImage']);
 });

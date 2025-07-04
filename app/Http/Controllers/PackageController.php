@@ -1,0 +1,449 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Image;
+use App\Models\Package;
+use App\Models\PackageActivity;
+use App\Models\PackageFaq;
+use App\Models\PackageHighlight;
+use App\Models\PackageIncludedExcluded;
+use App\Models\PackageItinerary;
+use App\Models\PackageMeal;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+
+class PackageController extends Controller
+{
+    public function index(Request $request)
+    {
+        $perPage = $request->input('per_page', 10);
+        $page = $request->input('page', 1);
+        $minRate = $request->input('min_rate');
+        $tags = $request->input('tags', []);
+        $search = $request->input('search');
+
+        if (!is_array($tags)) {
+            $tags = $tags ? explode(',', $tags) : [];
+        }
+
+        $query = Package::with([
+            'images',
+            'highlights',
+            'itineraries' => function ($query) {
+                $query->with([
+                    'activities',
+                    'meals'
+                ]);
+            },
+            'includedExcluded',
+            'faqs'
+        ]);
+
+        if ($minRate !== null) {
+            $query->where('rate', '>=', (float)$minRate);
+        }
+
+        if (!empty($tags)) {
+            $query->where(function($q) use ($tags) {
+                foreach ($tags as $tag) {
+                    $q->orWhere('tags', 'like', "%{$tag}%");
+                }
+            });
+        }
+
+        if ($search) {
+            $searchTerm = strtolower($search);
+            $query->where(function($q) use ($searchTerm) {
+                $q->where(DB::raw('LOWER(name)'), 'like', "%{$searchTerm}%")
+                ->orWhere(DB::raw('LOWER(location)'), 'like', "%{$searchTerm}%");
+            });
+        }
+
+        $packages = $query->paginate($perPage, ['*'], 'page', $page);
+        
+        return response()->json([
+            'data' => $packages->items(),
+            'pagination' => [
+                'current_page' => $packages->currentPage(),
+                'per_page' => $packages->perPage(),
+                'total' => $packages->total(),
+                'last_page' => $packages->lastPage(),
+            ]
+        ]);
+    }
+
+    public function uploadImage(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048', 
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        try {
+            $path = $request->file('image')->store('public/packages');
+            $publicPath = Storage::url($path);
+            
+            return response()->json([
+                'path' => $publicPath,
+                'full_url' => asset($publicPath)
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to upload image: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'code' => 'required|string|unique:packages,code',
+            'name' => 'required|json',
+            'duration' => 'required|json',
+            'location' => 'required|json',
+            'price' => 'required|json',
+            'original_price' => 'nullable|numeric',
+            'rate' => 'nullable|numeric|between:0,5',
+            'overview' => 'required|json',
+            'tags' => 'required|string',
+            'images' => 'required|array',
+            'images.*.path' => 'required|string',
+            'images.*.order' => 'sometimes|integer',
+            'highlights' => 'required|array',
+            'highlights.*.description' => 'required|string',
+            'itineraries' => 'required|array',
+            'itineraries.*.day' => 'required|integer',
+            'itineraries.*.title' => 'required|string',
+            'itineraries.*.activities' => 'required|array',
+            'itineraries.*.activities.*.time' => 'required|string',
+            'itineraries.*.activities.*.description' => 'required|string',
+            'itineraries.*.meals' => 'required|array',
+            'itineraries.*.meals.*.description' => 'required|string',
+            'included_excluded' => 'required|array',
+            'included_excluded.*.type' => 'required|in:included,excluded',
+            'included_excluded.*.description' => 'required|string',
+            'faqs' => 'required|array',
+            'faqs.*.question' => 'required|string',
+            'faqs.*.answer' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        DB::beginTransaction();
+        
+        try {
+            $package = Package::create([
+                'code' => $request->code,
+                'name' => $request->name,
+                'duration' => $request->duration,
+                'location' => $request->location,
+                'price' => $request->price,
+                'original_price' => $request->original_price,
+                'rate' => $request->rate,
+                'overview' => $request->overview,
+                'tags' => $request->tags,
+            ]);
+            
+            $this->processImages($package, $request->images);
+            
+            foreach ($request->highlights as $item) { 
+                PackageHighlight::create([
+                    'package_id' => $package->id,
+                    'description' => $item['description'], 
+                ]);
+            }
+            
+            foreach ($request->itineraries as $itinerary) {
+                $itineraryRecord = PackageItinerary::create([
+                    'package_id' => $package->id,
+                    'day' => $itinerary['day'],
+                    'title' => $itinerary['title'],
+                ]);
+                
+                foreach ($itinerary['activities'] as $activity) {
+                    PackageActivity::create([
+                        'itinerary_id' => $itineraryRecord->id,
+                        'time' => $activity['time'],
+                        'description' => $activity['description'],
+                    ]);
+                }
+                
+                foreach ($itinerary['meals'] as $meal) {
+                    PackageMeal::create([
+                        'itinerary_id' => $itineraryRecord->id,
+                        'description' => $meal['description'],
+                    ]);
+                }
+            }
+            
+            foreach ($request->included_excluded as $item) {
+                PackageIncludedExcluded::create([
+                    'package_id' => $package->id,
+                    'type' => $item['type'],
+                    'description' => $item['description'],
+                ]);
+            }
+            
+            foreach ($request->faqs as $faq) {
+                PackageFaq::create([
+                    'package_id' => $package->id,
+                    'question' => $faq['question'],
+                    'answer' => $faq['answer'],
+                ]);
+            }
+            
+            DB::commit();
+            return response()->json($package->load([
+                'images', 
+                'highlights', 
+                'itineraries.activities',
+                'itineraries.meals',
+                'includedExcluded',
+                'faqs'
+            ]), 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Server error: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function show(Package $package)
+    {
+        return $package->load([
+            'images', 
+            'highlights', 
+            'itineraries' => function ($query) {
+                $query->with([
+                    'activities',
+                    'meals'
+                ]);
+            },
+            'includedExcluded',
+            'faqs'
+        ]);
+    }
+
+    public function update(Request $request, Package $package)
+    {
+        $validator = Validator::make($request->all(), [
+            'code' => 'sometimes|string|unique:packages,code,'.$package->id,
+            'name' => 'sometimes|json',
+            'duration' => 'sometimes|json',
+            'location' => 'sometimes|json',
+            'price' => 'sometimes|json',
+            'original_price' => 'nullable|numeric',
+            'rate' => 'nullable|numeric|between:0,5',
+            'overview' => 'sometimes|json',
+            'tags' => 'sometimes|string',
+            'images' => 'sometimes|array',
+            'images.*.path' => 'required|string',
+            'images.*.order' => 'sometimes|integer',
+            'highlights' => 'required|array',
+            'highlights.*.description' => 'required|string',
+            'itineraries' => 'sometimes|array',
+            'itineraries.*.day' => 'required|integer',
+            'itineraries.*.title' => 'required|string',
+            'itineraries.*.activities' => 'required|array',
+            'itineraries.*.activities.*.time' => 'required|string',
+            'itineraries.*.activities.*.description' => 'required|string',
+            'itineraries.*.meals' => 'required|array',
+            'itineraries.*.meals.*.description' => 'required|string',
+            'included_excluded' => 'sometimes|array',
+            'included_excluded.*.type' => 'required|in:included,excluded',
+            'included_excluded.*.description' => 'required|string',
+            'faqs' => 'sometimes|array',
+            'faqs.*.question' => 'required|string',
+            'faqs.*.answer' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        DB::beginTransaction();
+        
+        try {
+            $package->update($request->only([
+                'code', 'name', 'duration', 'location', 'price', 
+                'original_price', 'rate', 'overview', 'tags'
+            ]));
+            
+            if ($request->has('images')) {
+                $this->processImages($package, $request->images);
+            }
+            
+            if ($request->has('highlights')) {
+                $package->highlights()->delete();
+                foreach ($request->highlights as $highlight) {
+                    PackageHighlight::create([
+                        'package_id' => $package->id,
+                        'description' => $highlight['description'], 
+                    ]);
+                }
+            }
+            
+            if ($request->has('itineraries')) {
+                $package->itineraries()->delete();
+                foreach ($request->itineraries as $itinerary) {
+                    $itineraryRecord = PackageItinerary::create([
+                        'package_id' => $package->id,
+                        'day' => $itinerary['day'],
+                        'title' => $itinerary['title'],
+                    ]);
+                    
+                    foreach ($itinerary['activities'] as $activity) {
+                        PackageActivity::create([
+                            'itinerary_id' => $itineraryRecord->id,
+                            'time' => $activity['time'],
+                            'description' => $activity['description'],
+                        ]);
+                    }
+                    
+                    foreach ($itinerary['meals'] as $meal) {
+                        PackageMeal::create([
+                            'itinerary_id' => $itineraryRecord->id,
+                            'description' => $meal['description'],
+                        ]);
+                    }
+                }
+            }
+            
+            if ($request->has('included_excluded')) {
+                $package->includedExcluded()->delete();
+                foreach ($request->included_excluded as $item) {
+                    PackageIncludedExcluded::create([
+                        'package_id' => $package->id,
+                        'type' => $item['type'],
+                        'description' => $item['description'],
+                    ]);
+                }
+            }
+            
+            if ($request->has('faqs')) {
+                $package->faqs()->delete();
+                foreach ($request->faqs as $faq) {
+                    PackageFaq::create([
+                        'package_id' => $package->id,
+                        'question' => $faq['question'],
+                        'answer' => $faq['answer'],
+                    ]);
+                }
+            }
+            
+            DB::commit();
+            return response()->json($package->load([
+                'images', 
+                'highlights', 
+                'itineraries.activities',
+                'itineraries.meals',
+                'includedExcluded',
+                'faqs'
+            ]), 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Server error: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function destroy(Package $package)
+    {
+        DB::transaction(function () use ($package) {
+            foreach ($package->images as $image) {
+                $path = str_replace('/storage', 'public', $image->path);
+                if (Storage::exists($path)) {
+                    Storage::delete($path);
+                }
+            }
+            
+            $package->highlights()->delete();
+            $package->itineraries()->each(function ($itinerary) {
+                $itinerary->activities()->delete();
+                $itinerary->meals()->delete();
+                $itinerary->delete();
+            });
+            $package->includedExcluded()->delete();
+            $package->faqs()->delete();
+            $package->images()->delete();
+            $package->delete();
+        });
+        
+        return response()->json(null, 204);
+    }
+
+    private function processImages($model, $images)
+    {
+        $existingImages = $model->images;
+
+        $newImagePaths = collect($images)->pluck('path')->toArray();
+
+        foreach ($existingImages as $existingImage) {
+            if (!in_array($existingImage->path, $newImagePaths)) {
+                $path = str_replace('/storage', 'public', $existingImage->path);
+                if (Storage::exists($path)) {
+                    Storage::delete($path);
+                }
+                $existingImage->delete();
+            }
+        }
+
+        foreach ($images as $index => $imageData) {
+            $image = $model->images()->firstOrNew(['path' => $imageData['path']]);
+            $image->order = $imageData['order'] ?? $index;
+            $image->save();
+        }
+    }
+
+    public function manageImages(Request $request, Package $package)
+    {
+        $request->validate([
+            'action' => 'required|in:add,remove,reorder',
+            'images' => 'required_if:action,add,reorder|array',
+            'images.*.path' => 'required_if:action,add|string',
+            'images.*.order' => 'required_if:action,reorder|integer',
+            'image_id' => 'required_if:action,remove|exists:images,id',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            switch ($request->action) {
+                case 'add':
+                    foreach ($request->images as $image) {
+                        $package->images()->create([
+                            'path' => $image['path'],
+                            'order' => $package->images()->max('order') + 1,
+                        ]);
+                    }
+                    break;
+                    
+                case 'remove':
+                    $image = $package->images()->findOrFail($request->image_id);
+                    $path = str_replace('/storage', 'public', $image->path);
+                    if (Storage::exists($path)) {
+                        Storage::delete($path);
+                    }
+                    $image->delete();
+                    break;
+                    
+                case 'reorder':
+                    foreach ($request->images as $image) {
+                        $package->images()
+                            ->where('id', $image['id'])
+                            ->update(['order' => $image['order']]);
+                    }
+                    break;
+            }
+            
+            DB::commit();
+            return response()->json($package->images()->orderBy('order')->get());
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+}

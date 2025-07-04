@@ -1,0 +1,671 @@
+[
+  {
+    "id": "1",
+    "code": "PKG001",
+    "name": {
+      "en": "⁠Phi Phi Islands + Bamboo Islands",
+      "id": "⁠Phi Phi Islands + Bamboo Islands",
+      "ru": "Острова Пхи-Пхи + Бамбуковые острова"
+    },
+    "duration": {
+      "en": "1 Day",
+      "id": "1 Hari",
+      "ru": "1 День"
+    },
+    "location": {
+      "en": "⁠Phi Phi Islands & Bamboo Islands, Thailand",
+      "id": "⁠Phi Phi Islands & Bamboo Islands, Thailand",
+      "ru": "Острова Пхи-Пхи & Бамbuковые острова, Таиланд"
+    },
+    "price": {
+      "adult": 2200,
+      "child": 2000,
+      "infant": 0
+    },
+    "originalPrice": 3500,
+    "rate": "4.9",
+    "images": [
+      "/package1/3.jpg",
+      "/package1/4.jpg",
+      "/package1/5.jpg",
+      "/package1/6.jpg"
+    ],
+    "overview": {
+      "en": "Enjoy the beauty of Phi Phi Islands  + Bamboo Islands with crystal clear waters and white sandy beaches.",
+      "id": "Nikmati keindahan Pulau Phi Phi  + Bamboo Islands dengan air kristal dan pantai pasir putihnya.",
+      "ru": "Насладитесь красотой островов Пхи-Пхи и Бамбуковых островов с кристально чистой водой и белыми песчаными пляжами."
+    },
+    "highlights": [
+      {
+        "en": "Premium speedboat transfer",
+        "id": "Transfer speedboat premium",
+        "ru": "Трансфер на премиум скоростном катере"
+      },
+      {
+        "en": "Snorkeling at pristine coral reefs",
+        "id": "Snorkeling di terumbu karang yang masih asli",
+        "ru": "Снорклинг у нетронутых коралловых рифов"
+      },
+      {
+        "en": "Lunch at Chong Khad Beach",
+        "id": "Makan siang di Pantai Chong Khad",
+        "ru": "Обед на пляже Чонг Кхад"
+      },
+      {
+        "en": "Visit to Moken Sea Gypsy village",
+        "id": "Kunjungan ke desa Moken Sea Gypsy",
+        "ru": "Посещение деревни морских цыган Мокен"
+      },
+      {
+        "en": "Professional snorkeling equipment included",
+        "id": "Peralatan snorkeling profesional disertakan",
+        "ru": "Профессиональное снаряжение для снорклинга включено"
+      }
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": {
+          "en": "Surin Islands Adventure",
+          "id": "Petualangan Kepulauan Surin",
+          "ru": "Приключение на островах Сурин"
+        },
+        "activities": [
+          {
+            "en": "07:00 - Hotel pickup",
+            "id": "07:00 - Penjemputan hotel",
+            "ru": "07:00 - Трансфер из отеля"
+          },
+          {
+            "en": "08:30 - Departure by premium speedboat",
+            "id": "08:30 - Keberangkatan dengan speedboat premium",
+            "ru": "08:30 - Отправление на премиум скоростном катере"
+          },
+          {
+            "en": "10:00 - Arrive at Surin Islands",
+            "id": "10:00 - Tiba di Kepulauan Surin",
+            "ru": "10:00 - Прибытие на острова Сурин"
+          },
+          {
+            "en": "10:30 - Snorkeling at coral reefs",
+            "id": "10:30 - Snorkeling di terumbu karang",
+            "ru": "10:30 - Снорклинг у коралловых рифов"
+          },
+          {
+            "en": "12:00 - Lunch at Chong Khad Beach",
+            "id": "12:00 - Makan siang di Pantai Chong Khad",
+            "ru": "12:00 - Обед на пляже Чонг Кхад"
+          },
+          {
+            "en": "14:00 - Visit Moken village",
+            "id": "14:00 - Kunjungi desa Moken",
+            "ru": "14:00 - Посещение деревни Мокен"
+          },
+          {
+            "en": "15:30 - Free time and relaxation",
+            "id": "15:30 - Waktu bebas dan relaksasi",
+            "ru": "15:30 - Свободное время и отдых"
+          },
+          {
+            "en": "16:30 - Return journey",
+            "id": "16:30 - Perjalanan kembali",
+            "ru": "16:30 - Обратный путь"
+          },
+          {
+            "en": "18:00 - Arrive back to Phuket",
+            "id": "18:00 - Tiba kembali di Phuket",
+            "ru": "18:00 - Возвращение в Пхукет"
+          }
+        ],
+        "meals": [
+          {
+            "en": "Lunch",
+            "id": "Makan Siang",
+            "ru": "Обед"
+          },
+          {
+            "en": "Light refreshments",
+            "id": "Makanan ringan",
+            "ru": "Легкие закуски"
+          }
+        ]
+      }
+    ],
+    "included": [
+      {
+        "en": "Round-trip premium speedboat transfer",
+        "id": "Transfer speedboat premium pulang-pergi",
+        "ru": "Трансфер на премиум скоростном катере туда-обратно"
+      },
+      {
+        "en": "Professional snorkeling equipment",
+        "id": "Peralatan snorkeling profesional",
+        "ru": "Профессиональное снаряжение для снорклинга"
+      },
+      {
+        "en": "Lunch and refreshments",
+        "id": "Makan siang dan makanan ringan",
+        "ru": "Обед и закуски"
+      },
+      {
+        "en": "National park fees",
+        "id": "Biaya taman nasional",
+        "ru": "Входные билеты в национальный парк"
+      },
+      {
+        "en": "Professional English-speaking guide",
+        "id": "Pemandu berbahasa Inggris profesional",
+        "ru": "Профессиональный англоговорящий гид"
+      },
+      {
+        "en": "Insurance coverage",
+        "id": "Asuransi perjalanan",
+        "ru": "Страховое покрытие"
+      },
+      {
+        "en": "Hotel pickup and drop-off",
+        "id": "Penjemputan dan pengantaran hotel",
+        "ru": "Тransfer dari отеля и обратно"
+      }
+    ],
+    "excluded": [
+      {
+        "en": "Personal expenses",
+        "id": "Pengeluaran pribadi",
+        "ru": "Личные расходы"
+      },
+      {
+        "en": "Alcoholic beverages",
+        "id": "Minuman beralkohol",
+        "ru": "Алкогольные напитки"
+      },
+      {
+        "en": "Underwater camera rental",
+        "id": "Sewa kamera bawah air",
+        "ru": "Аренда подводной камеры"
+      },
+      {
+        "en": "Tips for guide and crew",
+        "id": "Tips untuk pemandu dan kru",
+        "ru": "Чаевые для гида и команды"
+      }
+    ],
+    "faqs": [
+      {
+        "question": {
+          "en": "What should I bring?",
+          "id": "Apa yang harus saya bawa?",
+          "ru": "Что мне взять с собой?"
+        },
+        "answer": {
+          "en": "Swimwear, towel, sunscreen, hat, and waterproof bag for personal items.",
+          "id": "Pakaian renang, handuk, tabir surya, topi, dan tas tahan air untuk barang pribadi.",
+          "ru": "Купальник, полотенце, солнцезащитный крем, шляпу и водонепроницаемую сумку для личных вещей."
+        }
+      },
+      {
+        "question": {
+          "en": "Is this tour suitable for children?",
+          "id": "Apakah tur ini cocok untuk anak-anak?",
+          "ru": "Подходит ли этот тур для детей?"
+        },
+        "answer": {
+          "en": "Yes, children aged 4+ can participate. Life jackets are provided for all ages.",
+          "id": "Ya, anak-anak berusia 4+ dapat berpartisipasi. Jaket pelampung disediakan untuk semua usia.",
+          "ru": "Да, дети от 4 лет могут участвовать. Спасательные жилеты предоставляются для всех возрастов."
+        }
+      },
+      {
+        "question": {
+          "en": "What if the weather is bad?",
+          "id": "Bagaimana jika cuaca buruk?",
+          "ru": "Что если погода плохая?"
+        },
+        "answer": {
+          "en": "Tours may be cancelled due to rough seas. Full refund or alternative date will be offered.",
+          "id": "Tur dapat dibatalkan karena laut yang bergelombang. Pengembalian penuh atau tanggal alternatif akan ditawarkan.",
+          "ru": "Туры могут быть отменены из-за штормового моря. Будет предложен полный возврат средств или альтернативная дата."
+        }
+      }
+    ],
+    "tags": "1_day_trip"
+  },
+  {
+    "id": "2",
+    "code": "PKG002",
+    "name": {
+      "en": "⁠James Bond Islands",
+      "id": "⁠James Bond Islands",
+      "ru": "Острова Джеймса Бонда"
+    },
+    "duration": {
+      "en": "1 Day",
+      "id": "1 Hari",
+      "ru": "1 День"
+    },
+    "location": {
+      "en": "⁠James Bond Islands, Thailand",
+      "id": "⁠James Bond Islands, Thailand",
+      "ru": "Острова Джеймса Бонда, Таиланд"
+    },
+    "price": {
+      "adult": 2200,
+      "child": 2000,
+      "infant": 0
+    },
+    "originalPrice": 3500,
+    "rate": "4.9",
+    "images": [
+      "/package2/3.jpg",
+      "/package2/4.jpg",
+      "/package2/5.jpg",
+      "/package2/6.jpg"
+    ],
+    "overview": {
+      "en": "Explore the famous island featured in the James Bond movie 'The Man with the Golden Gun'.",
+      "id": "Jelajahi pulau terkenal yang muncul di film James Bond 'The Man with the Golden Gun'.",
+      "ru": "Исследуйте знаменитый остров, появившийся в фильме о Джеймсе Бонде «Человек с золотым пистолетом»."
+    },
+    "highlights": [
+      {
+        "en": "Visit famous Maya Bay",
+        "id": "Kunjungi Maya Bay yang terkenal",
+        "ru": "Посещение знаменитой бухты Майя"
+      },
+      {
+        "en": "Snorkeling at Bamboo Island",
+        "id": "Snorkeling di Pulau Bamboo",
+        "ru": "Снорклинг у острова Бамбу"
+      },
+      {
+        "en": "Monkey watching at Monkey Beach",
+        "id": "Mengamati monyet di Pantai Monyet",
+        "ru": "Наблюдение за обезьянами на Обезьяньем пляже"
+      },
+      {
+        "en": "Swimming at crystal clear lagoons",
+        "id": "Berenang di laguna jernih",
+        "ru": "Плавание в кристально чистых лагунах"
+      },
+      {
+        "en": "Buffet lunch included",
+        "id": "Makan siang prasmanan disertakan",
+        "ru": "Обед-шведский стол включен"
+      }
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": {
+          "en": "Phi Phi Islands Exploration",
+          "id": "Eksplorasi Kepulauan Phi Phi",
+          "ru": "Исследование островов Пхи Пхи"
+        },
+        "activities": [
+          {
+            "en": "07:30 - Hotel pickup",
+            "id": "07:30 - Penjemputan hotel",
+            "ru": "07:30 - Трансфер из отеля"
+          },
+          {
+            "en": "09:00 - Departure by big boat",
+            "id": "09:00 - Keberangkatan dengan kapal besar",
+            "ru": "09:00 - Отправление на большом катере"
+          },
+          {
+            "en": "10:30 - Arrive at Maya Bay",
+            "id": "10:30 - Tiba di Maya Bay",
+            "ru": "10:30 - Прибытие в бухту Майя"
+          },
+          {
+            "en": "11:30 - Snorkeling at Bamboo Island",
+            "id": "11:30 - Snorkeling di Pulau Bamboo",
+            "ru": "11:30 - Снорклинг у острова Бамбу"
+          },
+          {
+            "en": "12:30 - Buffet lunch on board",
+            "id": "12:30 - Makan siang prasmanan di kapal",
+            "ru": "12:30 - Обед-шведский стол на борту"
+          },
+          {
+            "en": "14:00 - Visit Monkey Beach",
+            "id": "14:00 - Kunjungi Pantai Monyet",
+            "ru": "14:00 - Посещение Обезьяньего пляжа"
+          },
+          {
+            "en": "15:00 - Swimming at Pileh Lagoon",
+            "id": "15:00 - Berenang di Laguna Pileh",
+            "ru": "15:00 - Плавание в лагуне Пиле"
+          },
+          {
+            "en": "16:00 - Return journey",
+            "id": "16:00 - Perjalanan kembali",
+            "ru": "16:00 - Обратный путь"
+          },
+          {
+            "en": "17:30 - Arrive back to Phuket",
+            "id": "17:30 - Tiba kembali di Phuket",
+            "ru": "17:30 - Возвращение в Пхукет"
+          }
+        ],
+        "meals": [
+          {
+            "en": "Buffet lunch",
+            "id": "Makan siang prasmanan",
+            "ru": "Обед-шведский стол"
+          },
+          {
+            "en": "Fruits and drinks",
+            "id": "Buah-buahan dan minuman",
+            "ru": "Фрукты и напитки"
+          }
+        ]
+      }
+    ],
+    "included": [
+      {
+        "en": "Round-trip big boat transfer",
+        "id": "Transfer kapal besar pulang-pergi",
+        "ru": "Трансфер на большом катере туда-обратно"
+      },
+      {
+        "en": "Buffet lunch on boat",
+        "id": "Makan siang prasmanan di kapal",
+        "ru": "Обед-шведский стол на катере"
+      },
+      {
+        "en": "Snorkeling equipment",
+        "id": "Peralatan snorkeling",
+        "ru": "Снаряжение для снорклинга"
+      },
+      {
+        "en": "National park fees",
+        "id": "Biaya taman nasional",
+        "ru": "Входные билеты в национальный парк"
+      },
+      {
+        "en": "English-speaking guide",
+        "id": "Pemandu berbahasa Inggris",
+        "ru": "Англоговорящий гид"
+      },
+      {
+        "en": "Hotel pickup and drop-off",
+        "id": "Penjemputan dan pengantaran hotel",
+        "ru": "Трансfer dari отеля и обратно"
+      },
+      {
+        "en": "Insurance",
+        "id": "Asuransi",
+        "ru": "Страховка"
+      }
+    ],
+    "excluded": [
+      {
+        "en": "Personal expenses",
+        "id": "Pengeluaran pribadi",
+        "ru": "Личные расходы"
+      },
+      {
+        "en": "Underwater camera rental",
+        "id": "Sewa kamera bawah air",
+        "ru": "Аренда подводной камеры"
+      },
+      {
+        "en": "Alcoholic beverages",
+        "id": "Minuman beralkohol",
+        "ru": "Алкогольные напитки"
+      },
+      {
+        "en": "Tips for staff",
+        "id": "Tips untuk staf",
+        "ru": "Чаевые для персонала"
+      }
+    ],
+    "faqs": [
+      {
+        "question": {
+          "en": "Is Maya Bay open?",
+          "id": "Apakah Maya Bay buka?",
+          "ru": "Открыта ли бухта Майя?"
+        },
+        "answer": {
+          "en": "Yes, Maya Bay is currently open with limited visitors per day to protect the environment.",
+          "id": "Ya, Maya Bay saat ini buka dengan jumlah pengunjung terbatas per hari untuk melindungi lingkungan.",
+          "ru": "Да, бухта Майя в настоящее время открыта с ограниченным количеством посетителей в день для защиты окружающей среды."
+        }
+      },
+      {
+        "question": {
+          "en": "Can I see monkeys?",
+          "id": "Bisakah saya melihat monyet?",
+          "ru": "Могу ли я увидеть обезьян?"
+        },
+        "answer": {
+          "en": "Wild monkeys can be observed at Monkey Beach, but feeding is strictly prohibited.",
+          "id": "Monyet liar dapat diamati di Pantai Monyet, tetapi memberi makan sangat dilarang.",
+          "ru": "Диких обезьян можно наблюдать на Обезьяньем пляже, но кормление строго запрещено."
+        }
+      }
+    ],
+    "tags": "open_trip"
+  },
+  {
+    "id": "3",
+    "code": "PKG003",
+    "name": {
+      "en": "Rental Van VIP - Thailand",
+      "id": "Rental Van VIP - Thailand",
+      "ru": "Прокат VIP-фургона - Таиланд"
+    },
+    "duration": {
+      "en": "1 Day",
+      "id": "1 Hari",
+      "ru": "1 День"
+    },
+    "location": {
+      "en": "Thailand",
+      "id": "Thailand",
+      "ru": "Таиланд"
+    },
+    "price": {
+      "adult": 1500,
+      "child": 1300,
+      "infant": 0
+    },
+    "originalPrice": 2000,
+    "rate": "4.9",
+    "images": [
+      "/package3/3.jpg",
+      "/package3/4.jpg",
+      "/package3/5.jpg",
+      "/package3/6.jpg"
+    ],
+    "overview": {
+      "en": "Rental van in Bangkok, Phuket & other cities, comfortable travel with friendly professional drivers!",
+      "id": "Rental van di Bangkok, Phuket & kota lain, nyaman keliling bareng supir ramah profesional!",
+      "ru": "Аренда микроавтобуса в Бангкоке, Пхукете и других городах — комфортные поездки с дружелюбными и профессиональными водителями!"
+    },
+    "highlights": [
+      {
+        "en": "Visit famous James Bond Island",
+        "id": "Kunjungi Pulau James Bond yang terkenal",
+        "ru": "Посещение знаменитого острова Джеймса Бонда"
+      },
+      {
+        "en": "Cave exploration by kayak",
+        "id": "Eksplorasi gua dengan kayak",
+        "ru": "Исследование пещер на каяке"
+      },
+      {
+        "en": "Traditional longtail boat experience",
+        "id": "Pengalaman perahu longtail tradisional",
+        "ru": "Традиционная поездка на длиннохвостой лодке"
+      },
+      {
+        "en": "Local fishing village visit",
+        "id": "Kunjungan ke desa nelayan lokal",
+        "ru": "Посещение местной рыбацкой деревни"
+      },
+      {
+        "en": "Authentic Thai lunch",
+        "id": "Makan siang Thailand otentik",
+        "ru": "Аутентичный тайский обед"
+      }
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": {
+          "en": "James Bond Island Adventure",
+          "id": "Petualangan Pulau James Bond",
+          "ru": "Приключение на острове Джеймса Бонда"
+        },
+        "activities": [
+          {
+            "en": "08:00 - Hotel pickup",
+            "id": "08:00 - Penjemputan hotel",
+            "ru": "08:00 - Трансфер из отеля"
+          },
+          {
+            "en": "09:30 - Arrive at Phang Nga Bay",
+            "id": "09:30 - Tiba di Teluk Phang Nga",
+            "ru": "09:30 - Прибытие в залив Пханг Нга"
+          },
+          {
+            "en": "10:00 - Longtail boat to James Bond Island",
+            "id": "10:00 - Perahu longtail ke Pulau James Bond",
+            "ru": "10:00 - Длиннохвостая лодка к острову Джеймса Бонда"
+          },
+          {
+            "en": "11:30 - Cave exploration by kayak",
+            "id": "11:30 - Eksplorasi gua dengan kayak",
+            "ru": "11:30 - Исследование пещер на каяке"
+          },
+          {
+            "en": "12:30 - Lunch at floating restaurant",
+            "id": "12:30 - Makan siang di restoran terapung",
+            "ru": "12:30 - Обед в плавучем ресторане"
+          },
+          {
+            "en": "14:00 - Visit fishing village",
+            "id": "14:00 - Kunjungi desa nelayan",
+            "ru": "14:00 - Посещение рыбацкой деревни"
+          },
+          {
+            "en": "15:30 - Shopping at local market",
+            "id": "15:30 - Berbelanja di pasar lokal",
+            "ru": "15:30 - Покупки на местном рынке"
+          },
+          {
+            "en": "16:00 - Return journey",
+            "id": "16:00 - Perjalanan kembali",
+            "ru": "16:00 - Обратный путь"
+          },
+          {
+            "en": "17:30 - Arrive back to hotel",
+            "id": "17:30 - Tiba kembali di hotel",
+            "ru": "17:30 - Возвращение в отель"
+          }
+        ],
+        "meals": [
+          {
+            "en": "Authentic Thai lunch",
+            "id": "Makan siang Thailand otentik",
+            "ru": "Аутентичный тайский обед"
+          },
+          {
+            "en": "Local snacks",
+            "id": "Makanan ringan lokal",
+            "ru": "Местные закуски"
+          }
+        ]
+      }
+    ],
+    "included": [
+      {
+        "en": "Round-trip transportation",
+        "id": "Transportasi pulang-pergi",
+        "ru": "Транспорт туда-обратно"
+      },
+      {
+        "en": "Longtail boat rides",
+        "id": "Perjalanan perahu longtail",
+        "ru": "Поездки на длиннохвостой лодке"
+      },
+      {
+        "en": "Kayak and equipment",
+        "id": "Kayak dan peralatan",
+        "ru": "Каяк и оборудование"
+      },
+      {
+        "en": "Thai lunch",
+        "id": "Makan siang Thailand",
+        "ru": "Тайский обед"
+      },
+      {
+        "en": "English-speaking guide",
+        "id": "Pemandu berbahasa Inggris",
+        "ru": "Англоговорящий гид"
+      },
+      {
+        "en": "Hotel pickup and drop-off",
+        "id": "Penjemputan dan pengantaran hotel",
+        "ru": "Трансfer dari отеля dan kembali"
+      },
+      {
+        "en": "Insurance coverage",
+        "id": "Asuransi perjalanan",
+        "ru": "Страховое покрытие"
+      }
+    ],
+    "excluded": [
+      {
+        "en": "Personal expenses",
+        "id": "Pengeluaran pribadi",
+        "ru": "Личные расходы"
+      },
+      {
+        "en": "Souvenirs",
+        "id": "Suvenir",
+        "ru": "Сувениры"
+      },
+      {
+        "en": "Additional beverages",
+        "id": "Minuman tambahan",
+        "ru": "Дополнительные напитки"
+      },
+      {
+        "en": "Tips for guide",
+        "id": "Tips untuk pemandu",
+        "ru": "Чаевые для гида"
+      }
+    ],
+    "faqs": [
+      {
+        "question": {
+          "en": "Do I need kayaking experience?",
+          "id": "Apakah saya perlu pengalaman kayak?",
+          "ru": "Нужен ли мне опыт каякинга?"
+        },
+        "answer": {
+          "en": "No experience needed. Our guides will provide basic instruction and assistance.",
+          "id": "Tidak perlu pengalaman. Pemandu kami akan memberikan instruksi dasar dan bantuan.",
+          "ru": "Опыт не нужен. Наши гиды предоставят базовые инструкции и помощь."
+        }
+      },
+      {
+        "question": {
+          "en": "What should I wear?",
+          "id": "Apa yang harus saya kenakan?",
+          "ru": "Что мне надеть?"
+        },
+        "answer": {
+          "en": "Light clothing, swimwear, and shoes that can get wet. Avoid white clothing.",
+          "id": "Pakaian ringan, pakaian renang, dan sepatu yang bisa basah. Hindari pakaian putih.",
+          "ru": "Легкую одежду, купальник и обувь, которая может промокнуть. Избегайте белой одежды."
+        }
+      }
+    ],
+    "tags": "private_service"
+  }
+]
