@@ -52,4 +52,9 @@ class Package extends Model
     {
         return $this->morphMany(Image::class, 'imageable');
     }
+
+    public function cancellationPolicies(): HasMany
+    {
+        return $this->hasMany(PackageCancellationPolicy::class);
+    }
 }

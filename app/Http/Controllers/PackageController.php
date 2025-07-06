@@ -10,6 +10,7 @@ use App\Models\PackageHighlight;
 use App\Models\PackageIncludedExcluded;
 use App\Models\PackageItinerary;
 use App\Models\PackageMeal;
+use App\Models\PackageCancellationPolicy; // Tambahkan model baru
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -39,7 +40,8 @@ class PackageController extends Controller
                 ]);
             },
             'includedExcluded',
-            'faqs'
+            'faqs',
+            'cancellationPolicies'
         ]);
 
         if ($minRate !== null) {
@@ -113,9 +115,9 @@ class PackageController extends Controller
             'images' => 'required|array',
             'images.*.path' => 'required|string',
             'images.*.order' => 'sometimes|integer',
-            'highlights' => 'required|array',
+            'highlights' => 'sometimes|array', // Diubah menjadi sometimes
             'highlights.*.description' => 'required|string',
-            'itineraries' => 'required|array',
+            'itineraries' => 'sometimes|array', // Diubah menjadi sometimes
             'itineraries.*.day' => 'required|integer',
             'itineraries.*.title' => 'required|string',
             'itineraries.*.activities' => 'required|array',
@@ -123,12 +125,14 @@ class PackageController extends Controller
             'itineraries.*.activities.*.description' => 'required|string',
             'itineraries.*.meals' => 'required|array',
             'itineraries.*.meals.*.description' => 'required|string',
-            'included_excluded' => 'required|array',
+            'included_excluded' => 'sometimes|array', // Diubah menjadi sometimes
             'included_excluded.*.type' => 'required|in:included,excluded',
             'included_excluded.*.description' => 'required|string',
-            'faqs' => 'required|array',
+            'faqs' => 'sometimes|array', // Diubah menjadi sometimes
             'faqs.*.question' => 'required|string',
             'faqs.*.answer' => 'required|string',
+            'cancellation_policies' => 'sometimes|array', // Tambahkan validasi baru
+            'cancellation_policies.*.description' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -152,50 +156,67 @@ class PackageController extends Controller
             
             $this->processImages($package, $request->images);
             
-            foreach ($request->highlights as $item) { 
-                PackageHighlight::create([
-                    'package_id' => $package->id,
-                    'description' => $item['description'], 
-                ]);
-            }
-            
-            foreach ($request->itineraries as $itinerary) {
-                $itineraryRecord = PackageItinerary::create([
-                    'package_id' => $package->id,
-                    'day' => $itinerary['day'],
-                    'title' => $itinerary['title'],
-                ]);
-                
-                foreach ($itinerary['activities'] as $activity) {
-                    PackageActivity::create([
-                        'itinerary_id' => $itineraryRecord->id,
-                        'time' => $activity['time'],
-                        'description' => $activity['description'],
-                    ]);
-                }
-                
-                foreach ($itinerary['meals'] as $meal) {
-                    PackageMeal::create([
-                        'itinerary_id' => $itineraryRecord->id,
-                        'description' => $meal['description'],
+            if ($request->has('highlights') && is_array($request->highlights)) {
+                foreach ($request->highlights as $item) { 
+                    PackageHighlight::create([
+                        'package_id' => $package->id,
+                        'description' => $item['description'], 
                     ]);
                 }
             }
             
-            foreach ($request->included_excluded as $item) {
-                PackageIncludedExcluded::create([
-                    'package_id' => $package->id,
-                    'type' => $item['type'],
-                    'description' => $item['description'],
-                ]);
+            if ($request->has('itineraries') && is_array($request->itineraries)) {
+                foreach ($request->itineraries as $itinerary) {
+                    $itineraryRecord = PackageItinerary::create([
+                        'package_id' => $package->id,
+                        'day' => $itinerary['day'],
+                        'title' => $itinerary['title'],
+                    ]);
+                    
+                    foreach ($itinerary['activities'] as $activity) {
+                        PackageActivity::create([
+                            'itinerary_id' => $itineraryRecord->id,
+                            'time' => $activity['time'],
+                            'description' => $activity['description'],
+                        ]);
+                    }
+                    
+                    foreach ($itinerary['meals'] as $meal) {
+                        PackageMeal::create([
+                            'itinerary_id' => $itineraryRecord->id,
+                            'description' => $meal['description'],
+                        ]);
+                    }
+                }
             }
             
-            foreach ($request->faqs as $faq) {
-                PackageFaq::create([
-                    'package_id' => $package->id,
-                    'question' => $faq['question'],
-                    'answer' => $faq['answer'],
-                ]);
+            if ($request->has('included_excluded') && is_array($request->included_excluded)) {
+                foreach ($request->included_excluded as $item) {
+                    PackageIncludedExcluded::create([
+                        'package_id' => $package->id,
+                        'type' => $item['type'],
+                        'description' => $item['description'],
+                    ]);
+                }
+            }
+            
+            if ($request->has('faqs') && is_array($request->faqs)) {
+                foreach ($request->faqs as $faq) {
+                    PackageFaq::create([
+                        'package_id' => $package->id,
+                        'question' => $faq['question'],
+                        'answer' => $faq['answer'],
+                    ]);
+                }
+            }
+            
+            if ($request->has('cancellation_policies') && is_array($request->cancellation_policies)) {
+                foreach ($request->cancellation_policies as $policy) {
+                    PackageCancellationPolicy::create([
+                        'package_id' => $package->id,
+                        'description' => $policy['description'],
+                    ]);
+                }
             }
             
             DB::commit();
@@ -205,7 +226,8 @@ class PackageController extends Controller
                 'itineraries.activities',
                 'itineraries.meals',
                 'includedExcluded',
-                'faqs'
+                'faqs',
+                'cancellationPolicies' 
             ]), 201);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -225,7 +247,8 @@ class PackageController extends Controller
                 ]);
             },
             'includedExcluded',
-            'faqs'
+            'faqs',
+            'cancellationPolicies' 
         ]);
     }
 
@@ -244,7 +267,7 @@ class PackageController extends Controller
             'images' => 'sometimes|array',
             'images.*.path' => 'required|string',
             'images.*.order' => 'sometimes|integer',
-            'highlights' => 'required|array',
+            'highlights' => 'sometimes|array', 
             'highlights.*.description' => 'required|string',
             'itineraries' => 'sometimes|array',
             'itineraries.*.day' => 'required|integer',
@@ -254,12 +277,14 @@ class PackageController extends Controller
             'itineraries.*.activities.*.description' => 'required|string',
             'itineraries.*.meals' => 'required|array',
             'itineraries.*.meals.*.description' => 'required|string',
-            'included_excluded' => 'sometimes|array',
+            'included_excluded' => 'sometimes|array', 
             'included_excluded.*.type' => 'required|in:included,excluded',
             'included_excluded.*.description' => 'required|string',
-            'faqs' => 'sometimes|array',
+            'faqs' => 'sometimes|array', 
             'faqs.*.question' => 'required|string',
             'faqs.*.answer' => 'required|string',
+            'cancellation_policies' => 'sometimes|array', 
+            'cancellation_policies.*.description' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -336,6 +361,16 @@ class PackageController extends Controller
                 }
             }
             
+            if ($request->has('cancellation_policies')) {
+                $package->cancellationPolicies()->delete();
+                foreach ($request->cancellation_policies as $policy) {
+                    PackageCancellationPolicy::create([
+                        'package_id' => $package->id,
+                        'description' => $policy['description'],
+                    ]);
+                }
+            }
+            
             DB::commit();
             return response()->json($package->load([
                 'images', 
@@ -343,7 +378,8 @@ class PackageController extends Controller
                 'itineraries.activities',
                 'itineraries.meals',
                 'includedExcluded',
-                'faqs'
+                'faqs',
+                'cancellationPolicies' 
             ]), 200);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -369,6 +405,7 @@ class PackageController extends Controller
             });
             $package->includedExcluded()->delete();
             $package->faqs()->delete();
+            $package->cancellationPolicies()->delete(); 
             $package->images()->delete();
             $package->delete();
         });
