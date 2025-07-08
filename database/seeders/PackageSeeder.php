@@ -7,6 +7,7 @@ use App\Models\Package;
 use App\Models\PackageActivity;
 use App\Models\PackageFaq;
 use App\Models\PackageHighlight;
+use App\Models\PackagePrice;
 use App\Models\PackageIncludedExcluded;
 use App\Models\PackageItinerary;
 use App\Models\PackageMeal;
@@ -25,11 +26,12 @@ class PackageSeeder extends Seeder
                 'name' => $packageData['name'],
                 'duration' => $packageData['duration'],
                 'location' => $packageData['location'],
-                'price' => $packageData['price'],
-                'original_price' => $packageData['originalPrice'],
+                'starting_price' => isset($packageData['startingPrice']) ? $packageData['startingPrice'] : null,
+                'original_price' => isset($packageData['originalPrice']) ? $packageData['originalPrice'] : null,
                 'rate' => $packageData['rate'],
                 'overview' => $packageData['overview'],
                 'tags' => $packageData['tags'],
+                'order' => $packageData['order'],
             ]);
 
             // Create images
@@ -45,6 +47,16 @@ class PackageSeeder extends Seeder
                 PackageHighlight::create([
                     'package_id' => $package->id,
                     'description' => $highlight,
+                ]);
+            }
+
+            // Create prices
+            foreach ($packageData['prices'] as $price) {
+                PackagePrice::create([
+                    'package_id' => $package->id,
+                    'description' => $price['description'],
+                    'price' => $price['price'],
+                    'service_type' => $price['service_type']
                 ]);
             }
 

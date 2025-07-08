@@ -47,4 +47,5 @@ Route::middleware(\App\Http\Middleware\ApiAuthMiddleware::class)->group(function
     Route::delete('/packages/{package}', [PackageController::class, 'destroy']);
     Route::post('/packages/{package}/images', [PackageController::class, 'manageImages']);
     Route::post('/packages/upload-image', [PackageController::class, 'uploadImage']);
+    Route::post('/packages/{package}/boost-product/', [PackageController::class, 'boostProduct']);
 });

@@ -13,11 +13,12 @@ return new class extends Migration {
             $table->json('name');
             $table->json('duration');
             $table->json('location');
-            $table->json('price');
+            $table->decimal('starting_price', 10, 2)->nullable();
             $table->decimal('original_price', 10, 2)->nullable();
             $table->decimal('rate', 3, 1)->nullable(); 
             $table->json('overview');
             $table->string('tags');
+            $table->smallInteger('order')->nullable(); 
             $table->timestamps();
         });
 
@@ -66,10 +67,28 @@ return new class extends Migration {
             $table->json('answer');
             $table->timestamps();
         });
+
+        Schema::create('package_cancellation_policies', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('package_id')->constrained()->onDelete('cascade');
+            $table->json('description');
+            $table->timestamps();
+        });
+
+        Schema::create('package_prices', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('package_id')->constrained()->onDelete('cascade');
+            $table->json('service_type');
+            $table->decimal('price', 10, 2);
+            $table->json('description')->nullable();
+            $table->timestamps();
+        });
     }
 
     public function down()
     {
+        Schema::dropIfExists('package_prices');
+        Schema::dropIfExists('package_cancellation_policies');
         Schema::dropIfExists('package_faqs');
         Schema::dropIfExists('package_included_excluded');
         Schema::dropIfExists('package_meals');

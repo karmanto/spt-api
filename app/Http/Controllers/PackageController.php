@@ -10,7 +10,8 @@ use App\Models\PackageHighlight;
 use App\Models\PackageIncludedExcluded;
 use App\Models\PackageItinerary;
 use App\Models\PackageMeal;
-use App\Models\PackageCancellationPolicy; // Tambahkan model baru
+use App\Models\PackageCancellationPolicy; 
+use App\Models\PackagePrice; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -41,7 +42,8 @@ class PackageController extends Controller
             },
             'includedExcluded',
             'faqs',
-            'cancellationPolicies'
+            'cancellationPolicies',
+            'prices'
         ]);
 
         if ($minRate !== null) {
@@ -63,6 +65,10 @@ class PackageController extends Controller
                 ->orWhere(DB::raw('LOWER(location)'), 'like', "%{$searchTerm}%");
             });
         }
+
+        // Order by boost order then by ID
+        $query->orderByRaw('CASE WHEN `order` IS NULL THEN 1 ELSE 0 END, `order` ASC')
+              ->orderBy('id', 'desc');
 
         $packages = $query->paginate($perPage, ['*'], 'page', $page);
         
@@ -107,17 +113,18 @@ class PackageController extends Controller
             'name' => 'required|json',
             'duration' => 'required|json',
             'location' => 'required|json',
-            'price' => 'required|json',
+            'starting_price' => 'nullable|numeric',
             'original_price' => 'nullable|numeric',
             'rate' => 'nullable|numeric|between:0,5',
             'overview' => 'required|json',
             'tags' => 'required|string',
+            'order' => 'nullable|integer|min:1|max:3|unique:packages,order',
             'images' => 'required|array',
             'images.*.path' => 'required|string',
             'images.*.order' => 'sometimes|integer',
-            'highlights' => 'sometimes|array', // Diubah menjadi sometimes
+            'highlights' => 'sometimes|array', 
             'highlights.*.description' => 'required|string',
-            'itineraries' => 'sometimes|array', // Diubah menjadi sometimes
+            'itineraries' => 'sometimes|array', 
             'itineraries.*.day' => 'required|integer',
             'itineraries.*.title' => 'required|string',
             'itineraries.*.activities' => 'required|array',
@@ -125,14 +132,18 @@ class PackageController extends Controller
             'itineraries.*.activities.*.description' => 'required|string',
             'itineraries.*.meals' => 'required|array',
             'itineraries.*.meals.*.description' => 'required|string',
-            'included_excluded' => 'sometimes|array', // Diubah menjadi sometimes
+            'included_excluded' => 'sometimes|array',
             'included_excluded.*.type' => 'required|in:included,excluded',
             'included_excluded.*.description' => 'required|string',
-            'faqs' => 'sometimes|array', // Diubah menjadi sometimes
+            'faqs' => 'sometimes|array', 
             'faqs.*.question' => 'required|string',
             'faqs.*.answer' => 'required|string',
-            'cancellation_policies' => 'sometimes|array', // Tambahkan validasi baru
+            'cancellation_policies' => 'sometimes|array', 
             'cancellation_policies.*.description' => 'required|string',
+            'prices' => 'sometimes|array', 
+            'prices.*.description' => 'required|string',
+            'prices.*.service_type' => 'required|string',
+            'prices.*.price' => 'required|numeric',
         ]);
 
         if ($validator->fails()) {
@@ -147,11 +158,12 @@ class PackageController extends Controller
                 'name' => $request->name,
                 'duration' => $request->duration,
                 'location' => $request->location,
-                'price' => $request->price,
+                'starting_price' => $request->starting_price,
                 'original_price' => $request->original_price,
                 'rate' => $request->rate,
                 'overview' => $request->overview,
                 'tags' => $request->tags,
+                'order' => $request->order,
             ]);
             
             $this->processImages($package, $request->images);
@@ -161,6 +173,17 @@ class PackageController extends Controller
                     PackageHighlight::create([
                         'package_id' => $package->id,
                         'description' => $item['description'], 
+                    ]);
+                }
+            }
+
+            if ($request->has('prices') && is_array($request->prices)) {
+                foreach ($request->prices as $item) { 
+                    PackagePrice::create([
+                        'package_id' => $package->id,
+                        'service_type' => $item['service_type'], 
+                        'description' => $item['description'], 
+                        'price' => $item['price'], 
                     ]);
                 }
             }
@@ -227,7 +250,8 @@ class PackageController extends Controller
                 'itineraries.meals',
                 'includedExcluded',
                 'faqs',
-                'cancellationPolicies' 
+                'cancellationPolicies',
+                'prices'
             ]), 201);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -248,7 +272,8 @@ class PackageController extends Controller
             },
             'includedExcluded',
             'faqs',
-            'cancellationPolicies' 
+            'cancellationPolicies',
+            'prices'
         ]);
     }
 
@@ -259,11 +284,12 @@ class PackageController extends Controller
             'name' => 'sometimes|json',
             'duration' => 'sometimes|json',
             'location' => 'sometimes|json',
-            'price' => 'sometimes|json',
+            'starting_price' => 'nullable|numeric',
             'original_price' => 'nullable|numeric',
             'rate' => 'nullable|numeric|between:0,5',
             'overview' => 'sometimes|json',
             'tags' => 'sometimes|string',
+            'order' => 'nullable|integer|min:1|max:3|unique:packages,order,'.$package->id,
             'images' => 'sometimes|array',
             'images.*.path' => 'required|string',
             'images.*.order' => 'sometimes|integer',
@@ -285,6 +311,10 @@ class PackageController extends Controller
             'faqs.*.answer' => 'required|string',
             'cancellation_policies' => 'sometimes|array', 
             'cancellation_policies.*.description' => 'required|string',
+            'prices' => 'sometimes|array',
+            'prices.*.description' => 'required|string',
+            'prices.*.service_type' => 'required|string',
+            'prices.*.price' => 'required|numeric',
         ]);
 
         if ($validator->fails()) {
@@ -295,8 +325,8 @@ class PackageController extends Controller
         
         try {
             $package->update($request->only([
-                'code', 'name', 'duration', 'location', 'price', 
-                'original_price', 'rate', 'overview', 'tags'
+                'code', 'name', 'duration', 'location', 'starting_price', 
+                'original_price', 'rate', 'overview', 'tags', 'order'
             ]));
             
             if ($request->has('images')) {
@@ -309,6 +339,18 @@ class PackageController extends Controller
                     PackageHighlight::create([
                         'package_id' => $package->id,
                         'description' => $highlight['description'], 
+                    ]);
+                }
+            }
+
+            if ($request->has('prices')) {
+                $package->prices()->delete();
+                foreach ($request->prices as $price) { 
+                    PackagePrice::create([
+                        'package_id' => $package->id,
+                        'service_type' => $price['service_type'], 
+                        'description' => $price['description'], 
+                        'price' => $price['price'], 
                     ]);
                 }
             }
@@ -379,7 +421,8 @@ class PackageController extends Controller
                 'itineraries.meals',
                 'includedExcluded',
                 'faqs',
-                'cancellationPolicies' 
+                'cancellationPolicies',
+                'prices'
             ]), 200);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -389,6 +432,12 @@ class PackageController extends Controller
 
     public function destroy(Package $package)
     {
+        if (!is_null($package->order)) {
+            return response()->json([
+                'error' => 'Boosted packages cannot be deleted. Remove boost first.'
+            ], 403); 
+        }
+
         DB::transaction(function () use ($package) {
             foreach ($package->images as $image) {
                 $path = str_replace('/storage', 'public', $image->path);
@@ -405,7 +454,8 @@ class PackageController extends Controller
             });
             $package->includedExcluded()->delete();
             $package->faqs()->delete();
-            $package->cancellationPolicies()->delete(); 
+            $package->cancellationPolicies()->delete();
+            $package->prices()->delete();
             $package->images()->delete();
             $package->delete();
         });
@@ -481,6 +531,57 @@ class PackageController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function boostProduct(Package $package)
+    {
+        if ($package->order !== null) {
+            return response()->json([
+                'error' => 'Package already has an order and cannot be boosted.'
+            ], 400);
+        }
+
+        DB::beginTransaction();
+        try {
+            $packagesToUpdate = Package::whereNotNull('order')
+                ->orderBy('order')
+                ->get();
+            
+            $newOrder = 2; 
+            foreach ($packagesToUpdate as $pkg) {
+                if ($pkg->order <= 2) {
+                    $pkg->order = $newOrder;
+                    $pkg->save();
+                    $newOrder++;
+                } else {
+                    $pkg->order = null;
+                    $pkg->save();
+                }
+            }
+            
+            if ($packagesToUpdate->count() >= 3) {
+                $thirdPackage = $packagesToUpdate->where('order', 3)->first();
+                if ($thirdPackage) {
+                    $thirdPackage->order = null;
+                    $thirdPackage->save();
+                }
+            }
+
+            $package->order = 1;
+            $package->save();
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Package boosted to position 1 successfully',
+                'package' => $package->load('images')
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'error' => 'Failed to boost package: ' . $e->getMessage()
+            ], 500);
         }
     }
 }

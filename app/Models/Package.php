@@ -12,7 +12,6 @@ class Package extends Model
         'name' => 'json',
         'duration' => 'json',
         'location' => 'json',
-        'price' => 'json',
         'overview' => 'json',
     ];
 
@@ -21,11 +20,12 @@ class Package extends Model
         'name',
         'duration',
         'location',
-        'price',
         'original_price', 
+        'starting_price',
         'rate', 
         'overview',
         'tags',
+        'order',
     ];
 
     public function highlights(): HasMany
@@ -56,5 +56,10 @@ class Package extends Model
     public function cancellationPolicies(): HasMany
     {
         return $this->hasMany(PackageCancellationPolicy::class);
+    }
+
+    public function prices(): HasMany
+    {
+        return $this->hasMany(PackagePrice::class);
     }
 }

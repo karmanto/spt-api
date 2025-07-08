@@ -1,6 +1,7 @@
 [
   {
     "id": "1",
+    "order": 1,
     "code": "PKG001",
     "name": {
       "en": "⁠Phi Phi Islands + Bamboo Islands",
@@ -17,11 +18,24 @@
       "id": "⁠Phi Phi Islands & Bamboo Islands, Thailand",
       "ru": "Острова Пхи-Пхи & Бамbuковые острова, Таиланд"
     },
-    "price": {
-      "adult": 2200,
-      "child": 2000,
-      "infant": 0
-    },
+    "prices": [
+      {
+        "service_type": "adult",
+        "price": 2200,
+        "description": ""
+      },
+      {
+        "service_type": "child",
+        "price": 2000,
+        "description": ""
+      },
+      {
+        "service_type": "infant",
+        "price": 0,
+        "description": ""
+      }
+    ],
+    "startingPrice": 2200,
     "originalPrice": 3500,
     "rate": "4.9",
     "images": [
@@ -232,6 +246,7 @@
   },
   {
     "id": "2",
+    "order": 2,
     "code": "PKG002",
     "name": {
       "en": "⁠James Bond Islands",
@@ -248,11 +263,24 @@
       "id": "⁠James Bond Islands, Thailand",
       "ru": "Острова Джеймса Бонда, Таиланд"
     },
-    "price": {
-      "adult": 2200,
-      "child": 2000,
-      "infant": 0
-    },
+    "prices": [
+      {
+        "service_type": "adult",
+        "price": 2200,
+        "description": ""
+      },
+      {
+        "service_type": "child",
+        "price": 2000,
+        "description": ""
+      },
+      {
+        "service_type": "infant",
+        "price": 0,
+        "description": ""
+      }
+    ],
+    "startingPrice": 2200,
     "originalPrice": 3500,
     "rate": "4.9",
     "images": [
@@ -451,6 +479,7 @@
   },
   {
     "id": "3",
+    "order": 3,
     "code": "PKG003",
     "name": {
       "en": "Rental Van VIP - Thailand",
@@ -467,12 +496,25 @@
       "id": "Thailand",
       "ru": "Таиланд"
     },
-    "price": {
-      "adult": 1500,
-      "child": 1300,
-      "infant": 0
-    },
-    "originalPrice": 2000,
+    
+    "prices": [
+      {
+        "service_type": "transfer",
+        "price": 1500,
+        "description": ""
+      },
+      {
+        "service_type": "5 hours rent",
+        "price": 2500,
+        "description": ""
+      },
+      {
+        "service_type": "10 hours rent",
+        "price": 3500,
+        "description": ""
+      }
+    ],
+    "startingPrice": 3500,
     "rate": "4.9",
     "images": [
       "/package3/3.jpg",
