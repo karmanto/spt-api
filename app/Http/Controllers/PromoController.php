@@ -31,7 +31,7 @@ class PromoController extends Controller
             'old_price' => 'nullable',
             'end_date' => 'required|date',
             'pdf_url' => 'required|url',
-            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         if ($request->hasFile('image')) {
@@ -55,7 +55,7 @@ class PromoController extends Controller
             'old_price' => 'nullable',
             'end_date' => 'sometimes|required|date',
             'pdf_url' => 'sometimes|required|url',
-            'image' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
+            'image' => 'sometimes|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         // Update gambar jika ada

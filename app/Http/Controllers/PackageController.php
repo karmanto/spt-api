@@ -66,8 +66,9 @@ class PackageController extends Controller
             });
         }
 
-        // Order by boost order then by ID
-        $query->orderByRaw('CASE WHEN `order` IS NULL THEN 1 ELSE 0 END, `order` ASC')
+        // Order by: null orders last, then by order value, then by ID
+        $query->orderByRaw('`order` IS NULL') // NULL values come last
+              ->orderBy('order', 'asc')
               ->orderBy('id', 'desc');
 
         $packages = $query->paginate($perPage, ['*'], 'page', $page);
@@ -86,7 +87,7 @@ class PackageController extends Controller
     public function uploadImage(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048', 
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp,gif,webp|max:2048', 
         ]);
 
         if ($validator->fails()) {
@@ -118,7 +119,7 @@ class PackageController extends Controller
             'rate' => 'nullable|numeric|between:0,5',
             'overview' => 'required|json',
             'tags' => 'required|string',
-            'order' => 'nullable|integer|min:1|max:3|unique:packages,order',
+            'order' => 'nullable|integer|min:1',
             'images' => 'required|array',
             'images.*.path' => 'required|string',
             'images.*.order' => 'sometimes|integer',
@@ -163,7 +164,7 @@ class PackageController extends Controller
                 'rate' => $request->rate,
                 'overview' => $request->overview,
                 'tags' => $request->tags,
-                'order' => $request->order,
+                'order' => null, // New packages always have null order
             ]);
             
             $this->processImages($package, $request->images);
@@ -289,7 +290,7 @@ class PackageController extends Controller
             'rate' => 'nullable|numeric|between:0,5',
             'overview' => 'sometimes|json',
             'tags' => 'sometimes|string',
-            'order' => 'nullable|integer|min:1|max:3|unique:packages,order,'.$package->id,
+            'order' => 'nullable|integer|min:1',
             'images' => 'sometimes|array',
             'images.*.path' => 'required|string',
             'images.*.order' => 'sometimes|integer',
@@ -311,7 +312,7 @@ class PackageController extends Controller
             'faqs.*.answer' => 'required|string',
             'cancellation_policies' => 'sometimes|array', 
             'cancellation_policies.*.description' => 'required|string',
-            'prices' => 'sometimes|array',
+            'prices' => 'sometimes|array', 
             'prices.*.description' => 'required|string',
             'prices.*.service_type' => 'required|string',
             'prices.*.price' => 'required|numeric',
@@ -326,7 +327,7 @@ class PackageController extends Controller
         try {
             $package->update($request->only([
                 'code', 'name', 'duration', 'location', 'starting_price', 
-                'original_price', 'rate', 'overview', 'tags', 'order'
+                'original_price', 'rate', 'overview', 'tags'
             ]));
             
             if ($request->has('images')) {
@@ -432,12 +433,6 @@ class PackageController extends Controller
 
     public function destroy(Package $package)
     {
-        if (!is_null($package->order)) {
-            return response()->json([
-                'error' => 'Boosted packages cannot be deleted. Remove boost first.'
-            ], 403); 
-        }
-
         DB::transaction(function () use ($package) {
             foreach ($package->images as $image) {
                 $path = str_replace('/storage', 'public', $image->path);
@@ -534,53 +529,49 @@ class PackageController extends Controller
         }
     }
 
-    public function boostProduct(Package $package)
+    public function swapOrder(Request $request)
     {
-        if ($package->order !== null) {
-            return response()->json([
-                'error' => 'Package already has an order and cannot be boosted.'
-            ], 400);
-        }
+        $request->validate([
+            'first_package_id'  => 'required|exists:packages,id',
+            'second_package_id' => 'required|exists:packages,id',
+        ]);
+
+        $first  = Package::findOrFail($request->first_package_id);
+        $second = Package::findOrFail($request->second_package_id);
 
         DB::beginTransaction();
         try {
-            $packagesToUpdate = Package::whereNotNull('order')
-                ->orderBy('order')
-                ->get();
-            
-            $newOrder = 2; 
-            foreach ($packagesToUpdate as $pkg) {
-                if ($pkg->order <= 2) {
-                    $pkg->order = $newOrder;
-                    $pkg->save();
-                    $newOrder++;
-                } else {
-                    $pkg->order = null;
-                    $pkg->save();
-                }
+            $maxOrder = Package::max('order') ?? 0;
+            $nextOrder = $maxOrder;
+
+            if (is_null($first->order)) {
+                $nextOrder++;
+                $first->order = $nextOrder;
             }
-            
-            if ($packagesToUpdate->count() >= 3) {
-                $thirdPackage = $packagesToUpdate->where('order', 3)->first();
-                if ($thirdPackage) {
-                    $thirdPackage->order = null;
-                    $thirdPackage->save();
-                }
+            if (is_null($second->order)) {
+                $nextOrder++;
+                $second->order = $nextOrder;
             }
 
-            $package->order = 1;
-            $package->save();
+            $temp        = $first->order;
+            $first->order  = $second->order;
+            $second->order = $temp;
+
+            $first->save();
+            $second->save();
 
             DB::commit();
 
             return response()->json([
-                'message' => 'Package boosted to position 1 successfully',
-                'package' => $package->load('images')
-            ]);
+                'message' => 'Order swapped successfully',
+                'first'   => $first,
+                'second'  => $second,
+            ], 200);
+
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
-                'error' => 'Failed to boost package: ' . $e->getMessage()
+                'error' => 'Swap failed: ' . $e->getMessage()
             ], 500);
         }
     }

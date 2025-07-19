@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\GalleryController;
 use Illuminate\Http\Request;
@@ -33,6 +34,9 @@ Route::get('/promos/{promo}', [PromoController::class, 'show']);
 Route::get('/packages', [PackageController::class, 'index']);
 Route::get('/packages/{package}', [PackageController::class, 'show']);
 
+Route::get('/blogs', [BlogController::class, 'index']);
+Route::get('/blogs/{blog}', [BlogController::class, 'show']);
+
 Route::middleware(\App\Http\Middleware\ApiAuthMiddleware::class)->group(function () {
     Route::get('/users/current', [\App\Http\Controllers\UserController::class, 'get']);
     Route::patch('/users/current', [\App\Http\Controllers\UserController::class, 'update']);
@@ -42,10 +46,14 @@ Route::middleware(\App\Http\Middleware\ApiAuthMiddleware::class)->group(function
     Route::put('/promos/{promo}', [PromoController::class, 'update']);
     Route::delete('/promos/{promo}', [PromoController::class, 'destroy']);
 
+    Route::post('/blogs', [BlogController::class, 'store']);
+    Route::put('/blogs/{blog}', [BlogController::class, 'update']);
+    Route::delete('/blogs/{blog}', [BlogController::class, 'destroy']);
+
     Route::post('/packages', [PackageController::class, 'store']);
     Route::put('/packages/{package}', [PackageController::class, 'update']);
     Route::delete('/packages/{package}', [PackageController::class, 'destroy']);
     Route::post('/packages/{package}/images', [PackageController::class, 'manageImages']);
     Route::post('/packages/upload-image', [PackageController::class, 'uploadImage']);
-    Route::post('/packages/{package}/boost-product/', [PackageController::class, 'boostProduct']);
+    Route::post('/packages/swap-order/', [PackageController::class, 'swapOrder']);
 });
