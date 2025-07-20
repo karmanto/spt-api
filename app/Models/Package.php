@@ -17,6 +17,7 @@ class Package extends Model
 
     protected $fillable = [
         'code', 
+        'tour_type',
         'name',
         'duration',
         'location',

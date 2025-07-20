@@ -10,6 +10,7 @@ return new class extends Migration {
         Schema::create('packages', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique(); 
+            $table->tinyInteger('tour_type'); //1. Tour, 2. Domestic Tour, 3. International Tour
             $table->json('name');
             $table->json('duration');
             $table->json('location');
@@ -18,7 +19,7 @@ return new class extends Migration {
             $table->decimal('rate', 3, 1)->nullable(); 
             $table->json('overview');
             $table->string('tags');
-            $table->smallInteger('order')->nullable(); 
+            $table->integer('order')->nullable(); 
             $table->timestamps();
         });
 
@@ -32,7 +33,7 @@ return new class extends Migration {
         Schema::create('package_itineraries', function (Blueprint $table) {
             $table->id();
             $table->foreignId('package_id')->constrained()->onDelete('cascade');
-            $table->integer('day');
+            $table->tinyInteger('day');
             $table->json('title');
             $table->timestamps();
         });

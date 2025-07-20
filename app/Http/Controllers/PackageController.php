@@ -26,6 +26,7 @@ class PackageController extends Controller
         $minRate = $request->input('min_rate');
         $tags = $request->input('tags', []);
         $search = $request->input('search');
+        $tourType = $request->input('tour_type');
 
         if (!is_array($tags)) {
             $tags = $tags ? explode(',', $tags) : [];
@@ -45,6 +46,10 @@ class PackageController extends Controller
             'cancellationPolicies',
             'prices'
         ]);
+
+        if ($tourType) {
+            $query->where('tour_type', '=', (int)$tourType);
+        }
 
         if ($minRate !== null) {
             $query->where('rate', '>=', (float)$minRate);
@@ -111,6 +116,7 @@ class PackageController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'code' => 'required|string|unique:packages,code',
+            'tour_type' => 'required|numeric',
             'name' => 'required|json',
             'duration' => 'required|json',
             'location' => 'required|json',
@@ -156,6 +162,7 @@ class PackageController extends Controller
         try {
             $package = Package::create([
                 'code' => $request->code,
+                'tour_type' => $request->tour_type,
                 'name' => $request->name,
                 'duration' => $request->duration,
                 'location' => $request->location,
@@ -164,7 +171,7 @@ class PackageController extends Controller
                 'rate' => $request->rate,
                 'overview' => $request->overview,
                 'tags' => $request->tags,
-                'order' => null, // New packages always have null order
+                'order' => null,
             ]);
             
             $this->processImages($package, $request->images);
