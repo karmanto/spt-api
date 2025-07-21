@@ -122,6 +122,7 @@ class PackageController extends Controller
             'location' => 'required|json',
             'starting_price' => 'nullable|numeric',
             'original_price' => 'nullable|numeric',
+            'currency' => 'nullable|string',
             'rate' => 'nullable|numeric|between:0,5',
             'overview' => 'required|json',
             'tags' => 'required|string',
@@ -168,6 +169,7 @@ class PackageController extends Controller
                 'location' => $request->location,
                 'starting_price' => $request->starting_price,
                 'original_price' => $request->original_price,
+                'currency' => $request->currency,
                 'rate' => $request->rate,
                 'overview' => $request->overview,
                 'tags' => $request->tags,
@@ -294,6 +296,7 @@ class PackageController extends Controller
             'location' => 'sometimes|json',
             'starting_price' => 'nullable|numeric',
             'original_price' => 'nullable|numeric',
+            'currency' => 'nullable|string',
             'rate' => 'nullable|numeric|between:0,5',
             'overview' => 'sometimes|json',
             'tags' => 'sometimes|string',
@@ -334,7 +337,7 @@ class PackageController extends Controller
         try {
             $package->update($request->only([
                 'code', 'name', 'duration', 'location', 'starting_price', 
-                'original_price', 'rate', 'overview', 'tags'
+                'original_price', 'currency', 'rate', 'overview', 'tags'
             ]));
             
             if ($request->has('images')) {

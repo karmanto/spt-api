@@ -23,6 +23,7 @@ class Package extends Model
         'location',
         'original_price', 
         'starting_price',
+        'currency',
         'rate', 
         'overview',
         'tags',

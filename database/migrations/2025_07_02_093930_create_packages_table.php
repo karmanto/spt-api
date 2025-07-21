@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->json('location');
             $table->decimal('starting_price', 10, 2)->nullable();
             $table->decimal('original_price', 10, 2)->nullable();
+            $table->string('currency')->nullable();
             $table->decimal('rate', 3, 1)->nullable(); 
             $table->json('overview');
             $table->string('tags');
